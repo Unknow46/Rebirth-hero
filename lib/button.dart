@@ -93,7 +93,7 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
     return Container(
       padding: widget.onPressed != null ?  EdgeInsets.only(bottom: 2, left: 0.5, right: 0.5) : null,
       decoration: BoxDecoration(
-        color: Colors.red,
+        color: Colors.black,
         borderRadius: radius,
       ),
       child: GestureDetector(
