@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class Redirection extends PageRoute {
+class Redirection extends PageRoute<dynamic> {
 
   Redirection(this.child);
 
@@ -16,7 +16,7 @@ class Redirection extends PageRoute {
   bool get maintainState => true;
 
   @override
-  Duration get transitionDuration => Duration(milliseconds: 250);
+  Duration get transitionDuration => const Duration(milliseconds: 250);
 
   @override
   Widget buildPage(BuildContext context, Animation<double> animation, Animation<double> secondaryAnimation) {

@@ -1,58 +1,64 @@
 import 'dart:ui';
-import 'package:rebirth_hero/game.dart';
-import 'package:rebirth_hero/redirection.dart';
-import 'button.dart';
-import 'package:rebirth_hero/particles.dart';
 
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
+import 'package:rebirth_hero/pages/game.dart';
+import 'package:rebirth_hero/widgets/redirection.dart';
+
+import '../widgets/button.dart';
 
 
 class Accueil extends StatefulWidget {
+
+  const Accueil({Key key}):super(key: key);
+
   @override
   _AccueilState createState() => _AccueilState();
 }
 
-class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerProviderStateMixin {
+
+
+class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
   // var to check if the player clicked on the screen to start the game
   var tapPlay = false;
 
   static AudioCache musicCache;
   static AudioPlayer instance;
 
-  static final String background = "assets/background/map/arena3.jpg";
-  static final String boss = "assets/background/boss/final_boss_1.jpg";
-  static final String hero = "assets/background/elements/hero.png";
-  static final String logo = "assets/background/logo_fges.jpg";
+  static const String background = 'assets/background/map/arena3.jpg';
+  static const String boss = 'assets/background/boss/final_boss_1.jpg';
+  static const String hero = 'assets/background/elements/hero.png';
 
   static var musicPlaying = false;
 
-  var heroYPosition = 0.0;
-  var bossYPosition = 1.0;
+  double heroYPosition = 0;
+  double bossYPosition = 1;
 
-  var tapAlpha = 0.0;
+  double tapAlpha = 0;
 
   AnimationController _controller;
-  Animation _animationHero;
-  Animation _animationBoss;
+  Animation<dynamic> _animationHero;
+  Animation<dynamic> _animationBoss;
 
   AnimationController _tapController;
-  Animation _tapAnimation;
+  Animation<dynamic> _tapAnimation;
 
   AnimationController _fadeController;
-  Animation _fadeAnimation;
+  Animation<dynamic> _fadeAnimation;
 
   var fade = Colors.transparent;
 
 
   void initGame() {
-    if (tapPlay) _fadeController.forward();
+    if (tapPlay) {
+      _fadeController.forward();
+    }
   }
 
-  void playMusic() async {
-    musicCache = AudioCache(prefix: "audio/");
-    instance = await musicCache.loop("theme.mp3");
+  Future<AudioPlayer> playMusic() async {
+    musicCache = AudioCache(prefix: 'audio/');
+    return instance = await musicCache.loop('theme.mp3');
   }
   void switchMusic() {
       if (musicPlaying && instance != null) {
@@ -75,7 +81,7 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
   void initAnimation() {
     _controller =
         AnimationController(vsync: this, duration: const Duration(seconds: 5));
-    _animationHero = Tween(begin: 1.0, end: 0.8).animate(
+    _animationHero = Tween(begin: 1, end: 0.6).animate(
         CurvedAnimation(parent: _controller, curve: Curves.decelerate))
       ..addStatusListener((state) {
         if (state == AnimationStatus.completed) {
@@ -90,7 +96,7 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
           heroYPosition = _animationHero.value;
         });
       });
-    _animationBoss = Tween(begin: 1.0, end: 0.6).animate(
+    _animationBoss = Tween(begin: 1, end: 0.6).animate(
         CurvedAnimation(parent: _controller, curve: Curves.decelerate))
       ..addListener(() {
         setState(() {
@@ -104,7 +110,7 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
   void initTapAnimation() {
     _tapController = AnimationController(vsync: this, duration: const Duration(seconds: 1));
     _tapAnimation =
-    Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(parent: _tapController, curve: Curves.decelerate))
+    Tween<double>(begin: 0, end: 1).animate(CurvedAnimation(parent: _tapController, curve: Curves.decelerate))
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
           _tapController.reverse();
@@ -114,17 +120,15 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
       })
       ..addListener(() {
         setState(() {
-          tapAlpha = _tapAnimation.value;
+          tapAlpha =  _tapAnimation.value;
         });
       });
-
-
     _fadeController = AnimationController(vsync: this, duration: const Duration(milliseconds: 500));
     _fadeAnimation = ColorTween(begin: Colors.transparent, end: Colors.black)
         .animate(CurvedAnimation(parent: _fadeController, curve: Curves.decelerate))
       ..addStatusListener((status) {
         if (status == AnimationStatus.completed) {
-          Navigator.pushReplacement(context,Redirection(Game()));
+          Navigator.pushReplacement(context,Redirection(const Game()));
         }
       })
       ..addListener(() {
@@ -134,23 +138,21 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
   @override
 
   void initState() {
-    WidgetsBinding.instance.addObserver(this);
     super.initState();
     initTapAnimation();
     initAnimation();
   }
-  @override
-  void didChangeAppLifecycleState(AppLifecycleState state) {
-    super.didChangeAppLifecycleState(state);
+
+  Future<void> didChangeAppLifecycleState(AppLifecycleState state) async {
       if (state == AppLifecycleState.inactive && instance != null) {
         if (musicPlaying) {
-          instance.stop();
+          await instance.stop();
           musicPlaying = false;
         }
       } else if (state == AppLifecycleState.resumed) {
         if (!musicPlaying) {
           musicPlaying = true;
-          playMusic();
+          await playMusic();
         }
       }
   }
@@ -167,8 +169,6 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
       instance.stop();
       musicPlaying = false;
     }
-
-    WidgetsBinding.instance.removeObserver(this);
     super.dispose();
   }
 
@@ -184,24 +184,42 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
               fit: BoxFit.cover,
             ),
           ),
-          Positioned.fill(child: Particles(25)),
           Align(
-            alignment: Alignment.center,
             child: Align(
-              alignment: Alignment(0.0, -1.0),
+              alignment: const Alignment(0, -1),
               heightFactor: bossYPosition,
-              child: Image.asset(
-                boss,
-                width: size /2,
-                height: size /2,
-                fit: BoxFit.cover,
+              child: Column(
+                children: <Widget>[
+                  Image.asset(
+                    boss,
+                    width: size /3,
+                    height: size /3,
+                    fit: BoxFit.cover,
+                  ),
+                  SafeArea(
+                    child: Opacity(
+                      opacity: tapAlpha,
+                        child: Container(
+                          alignment: Alignment.bottomCenter,
+                          padding: EdgeInsets.only(bottom: constraints.maxHeight * 0.10),
+                          child: const FancyButton( size: 20, color: Colors.black,
+                            child: Text('Tap to start', style: TextStyle(
+                              fontFamily: 'Games', fontWeight: FontWeight.bold,
+                              fontStyle: FontStyle.italic,
+                              decoration: TextDecoration.underline
+                            ),),
+                            )
+                          ),
+                        ),
+                    ),
+                ],
               ),
             ),
           ),
           BackdropFilter(
             filter: ImageFilter.blur(
-              sigmaX: 4.0,
-              sigmaY: 4.0,
+              sigmaX: 4,
+              sigmaY: 4,
             ),
             child: Align(
               alignment: Alignment.bottomCenter,
@@ -210,41 +228,15 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
                 heightFactor: heroYPosition,
                 child: Image.asset(
                   hero,
-                  width: size / 2,
-                  height: size / 2,
+                  width: size / 3,
+                  height: size / 3,
                   fit: BoxFit.contain,
                 ),
               ),
             ),
           ),
-          SafeArea(
-            bottom: false,
-            child: Container(
-              alignment: Alignment.topCenter,
-              padding: EdgeInsets.only(top: constraints.maxHeight * 0.04, left: 15.0, right: 15.0),
-              child: Image.asset(
-                logo,
-                height: 150.0 /2,
-                fit: BoxFit.contain,
-              ),
-            ),
-          ),
-          SafeArea(
-            child: Opacity(
-              opacity: 1.0,
-              child: Container(
-                alignment: Alignment.bottomCenter,
-                padding: EdgeInsets.only(bottom: constraints.maxHeight * 0.10),
-                child: Image.asset(
-                  "assets/background/elements/tapstart.jpg",
-                  height: size,
-                  width: size,
-                ),
-              ),
-            ),
-          ),
           AnimatedContainer(
-            duration: Duration(seconds: 2),
+            duration: const Duration(seconds: 2),
             child: GestureDetector(
               onTap: initGame,
               child: Container(
@@ -254,18 +246,18 @@ class _AccueilState extends State<Accueil> with WidgetsBindingObserver, TickerPr
           ),
           SafeArea(
             child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+              padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
               child: FancyButton(
+                size: 25,
+                color: Colors.green,
+                onPressed: () {
+                  switchMusic();
+                },
                 child: Icon(
                   Icons.music_note,
                   size: 20,
                   color: musicPlaying ? Colors.white : Colors.black54,
                 ),
-                size: 25,
-                color: Color(0xFF67AC5B),
-                onPressed: () {
-                  switchMusic();
-                },
               ),
             ),
           ),

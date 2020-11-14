@@ -38,7 +38,7 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
       vsync: this,
       value: oldControllerValue,
     );
-    _pressedAnimation = Tween<double>(begin: -buttonDepth, end: 0.0).animate(
+    _pressedAnimation = Tween<double>(begin: -buttonDepth, end: 0).animate(
       CurvedAnimation(parent: _animationController, curve: Curves.easeInOut),
     );
   }
@@ -65,14 +65,14 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
 
   void _onTapDown(_) {
     if (widget.onPressed != null) {
-      _downTicker = _animationController.animateTo(1.0);
+      _downTicker = _animationController.animateTo(1);
     }
   }
 
   void _onTapUp(_) {
     if (widget.onPressed != null) {
       _downTicker.whenComplete(() {
-        _animationController.animateTo(0.0);
+        _animationController.animateTo(0);
         widget.onPressed?.call();
       });
     }
@@ -91,7 +91,7 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
     final radius = BorderRadius.circular(horzPadding * 0.5);
 
     return Container(
-      padding: widget.onPressed != null ?  EdgeInsets.only(bottom: 2, left: 0.5, right: 0.5) : null,
+      padding: widget.onPressed != null ?  const EdgeInsets.only(bottom: 2, left: 0.5, right: 0.5) : null,
       decoration: BoxDecoration(
         color: Colors.black,
         borderRadius: radius,
@@ -114,7 +114,7 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
                   animation: _pressedAnimation,
                   builder: (BuildContext context, Widget child) {
                     return Transform.translate(
-                      offset: Offset(0.0, _pressedAnimation.value),
+                      offset: Offset(0, _pressedAnimation.value),
                       child: child,
                     );
                   },
@@ -130,16 +130,16 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
                                 color: _hslRelativeColor(l: 0.06),
                                 borderRadius: radius,
                               ),
-                              child: SizedBox.expand(),
+                              child: const SizedBox.expand(),
                             ),
                             Transform.translate(
-                              offset: Offset(0.0, vertPadding * 2),
+                              offset: Offset(0, vertPadding * 2),
                               child: DecoratedBox(
                                 decoration: BoxDecoration(
                                   color: _hslRelativeColor(),
                                   borderRadius: radius,
                                 ),
-                                child: SizedBox.expand(),
+                                child: const SizedBox.expand(),
                               ),
                             ),
                           ],
@@ -163,7 +163,8 @@ class _FancyButtonState extends State<FancyButton> with TickerProviderStateMixin
     );
   }
 
-  Color _hslRelativeColor({double h = 0.0, s = 0.0, l = 0.0}) {
+
+  Color _hslRelativeColor({double h = 0.0, double s = 0.0,double l = 0.0}) {
     final hslColor = HSLColor.fromColor(widget.color);
     h = (hslColor.hue + h).clamp(0.0, 360.0);
     s = (hslColor.saturation + s).clamp(0.0, 1.0);
