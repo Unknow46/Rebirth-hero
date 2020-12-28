@@ -6,6 +6,7 @@ import '../data/model/bonus.dart';
 class Setup {
 
 
+
   static List<Bonus> getBonus() {
     final listBonus = <Bonus>[];
     
@@ -29,7 +30,7 @@ class Setup {
 
   static List<Boss> getBoss() {
     final listBoss = <Boss>[];
-    
+
     // ignore: cascade_invocations
     listBoss.add(Boss('Magicien sombre',900, 'assets/background/boss/final_boss_1.jpg', 'tu es si faible que ça ?'));
     // ignore: cascade_invocations
@@ -40,6 +41,9 @@ class Setup {
     listBoss.add(Boss("L'oublié",3600, 'assets/background/boss/boss3.png', 'tu es si faible que ça ?'));
     return listBoss;
   }
+
+
+
 
   static TextStyle textStyle(double size, {Color color = Colors.white}) {
     return TextStyle(

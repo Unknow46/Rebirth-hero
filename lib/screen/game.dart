@@ -3,13 +3,13 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rebirth_hero/data/model/bonus.dart';
-import 'package:rebirth_hero/pages/accueil.dart';
 import 'package:rebirth_hero/widgets/button.dart';
 import 'package:rebirth_hero/widgets/hit_box.dart';
 import 'package:rebirth_hero/widgets/money_system.dart';
 import 'package:rebirth_hero/widgets/redirection.dart';
 import 'package:rebirth_hero/widgets/scroll.dart';
 import '../widgets/setup.dart';
+import 'accueil.dart';
 
 class Game extends StatefulWidget {
   const Game({Key key}): super(key: key);
@@ -270,7 +270,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                       FancyButton(
                           size: 18, color: Colors.red,
                           child: Text(
-                          'VIE: ${barreDegat.toInt().toString()}',
+                          'POINT DE VIE: ${barreDegat.toInt().toString()}',
                           style: Setup.textStyle(18),
                           ),),
                       Padding(

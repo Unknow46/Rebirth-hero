@@ -3,10 +3,10 @@ import 'dart:ui';
 import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
-import 'package:rebirth_hero/pages/game.dart';
 import 'package:rebirth_hero/widgets/redirection.dart';
 
 import '../widgets/button.dart';
+import 'game.dart';
 
 
 class Accueil extends StatefulWidget {
@@ -196,22 +196,6 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                     height: size /3,
                     fit: BoxFit.cover,
                   ),
-                  SafeArea(
-                    child: Opacity(
-                      opacity: tapAlpha,
-                        child: Container(
-                          alignment: Alignment.bottomCenter,
-                          padding: EdgeInsets.only(bottom: constraints.maxHeight * 0.10),
-                          child: const FancyButton( size: 20, color: Colors.black,
-                            child: Text('Tap to start', style: TextStyle(
-                              fontFamily: 'Games', fontWeight: FontWeight.bold,
-                              fontStyle: FontStyle.italic,
-                              decoration: TextDecoration.underline
-                            ),),
-                            )
-                          ),
-                        ),
-                    ),
                 ],
               ),
             ),
@@ -222,27 +206,37 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
               sigmaY: 4,
             ),
             child: Align(
-              alignment: Alignment.bottomCenter,
-              child: Align(
                 alignment: Alignment.bottomCenter,
-                heightFactor: heroYPosition,
-                child: Image.asset(
-                  hero,
-                  width: size / 3,
-                  height: size / 3,
-                  fit: BoxFit.contain,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                children: <Widget>[
+                  Opacity(
+                    opacity: tapAlpha,
+                        child: Container(
+                        alignment: Alignment.bottomCenter,
+                        child: FancyButton(
+                        size: MediaQuery.of(context).size.width / 10,
+                        color: Colors.redAccent,
+                            child: Text(
+                            'TAP TO START',
+                            style: TextStyle(
+                            color: Colors.white,
+                            fontSize:  MediaQuery.of(context).size.width /10,
+                            fontFamily: 'Gameplay'
+                            ),
+                            ),
+                        ),
+                        ),
+                    ),
+                  Image.asset(
+                    hero,
+                    width: size / 3,
+                    height: size / 3,
+                    fit: BoxFit.contain,
+                  ),
+                ],
                 ),
               ),
-            ),
-          ),
-          AnimatedContainer(
-            duration: const Duration(seconds: 2),
-            child: GestureDetector(
-              onTap: initGame,
-              child: Container(
-                color: fade,
-              ),
-            ),
           ),
           SafeArea(
             child: Padding(
@@ -258,6 +252,15 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                   size: 20,
                   color: musicPlaying ? Colors.white : Colors.black54,
                 ),
+              ),
+            ),
+          ),
+          AnimatedContainer(
+            duration: const Duration(seconds: 2),
+            child: GestureDetector(
+              onTap: initGame,
+              child: Container(
+                color: fade,
               ),
             ),
           ),
