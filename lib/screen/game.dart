@@ -38,6 +38,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   static var vieDefaut = 980.0;
   static var barreVie = vieDefaut;
   static var degatJoueur = 30.0;
+  static var rebornPrice = 100;
   static var tempsSupplementaire = 1000 * 10;
   VoidCallback onEarnTime;
   var gameOver = false;
@@ -137,6 +138,20 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   }
 
   //Mise en place du widget pour afficher l argent (img)
+
+  void reborn() {
+    setState(() {
+      if(argent >= rebornPrice){
+        argent = argent - rebornPrice;
+        rebornPrice +=50;
+        bossIndex = 0;
+        niveau = 1;
+        multiplicateur = 1.0;
+        barreVie = listBoss[bossIndex].vie.toDouble();
+      }
+    });
+
+  }
 
   Widget visibiliteArgent(dynamic achete) {
     if (achete) {
@@ -362,6 +377,24 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                   ),
                 ),
               )
+              ),
+              Align(
+                alignment: Alignment.centerRight,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
+                  child: FancyButton(
+                    size: 10,
+                    color: Colors.green,
+                    onPressed: reborn,
+                    child: Padding(
+                      padding: const EdgeInsets.all(8),
+                      child: Text(
+                        'Renaitre : $rebornPrice',
+                        style: Setup.textStyle(12),
+                      ),
+                    ),
+                  )
+                ),
               )
             ],
           ),
@@ -524,6 +557,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
     degatJoueur = 30.0;
     niveau = 1;
     multiplicateur = 1.0;
+    rebornPrice = 100;
   }
 
   @override
