@@ -3,6 +3,7 @@ import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:rebirth_hero/data/model/bonus.dart';
+import 'package:rebirth_hero/screen/game_over.dart';
 import 'package:rebirth_hero/widgets/button.dart';
 import 'package:rebirth_hero/widgets/hit_box.dart';
 import 'package:rebirth_hero/widgets/money_system.dart';
@@ -29,26 +30,26 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   var argent = 0;
   var argentGagne = false;
   var niveau = 1;
-  AudioPlayer hitJoueur;
-  AudioCache hitCache;
-  AudioPlayer argentJoueur;
-  AudioCache argentCache;
   static AudioCache musiqueCache;
   static AudioPlayer instance;
   var musicEnCours = false;
   Color clockColor = Colors.white;
   static var multiplicateur = 1.0;
-  static var degatDefaut = 980.0;
-  static var barreDegat = degatDefaut;
+  static var vieDefaut = 980.0;
+  static var barreVie = vieDefaut;
   static var degatJoueur = 30.0;
   static var tempsSupplementaire = 1000 * 10;
   VoidCallback onEarnTime;
   var gameOver = false;
+
+
   final _gamepadTouched = false;
 
   static String cielAsset() => 'assets/background/map/sky.png';
   static String areneAsset() => 'assets/background/map/ruins.png';
   static String heroAsset () => 'assets/background/elements/hero.png';
+
+
   //Definition de la liste de boss
   var listBoss = Setup.getBoss();
 
@@ -60,13 +61,6 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
     // je me sers de animation controller afin de definir le chrono du jeu
     final duration = controller.duration * controller.value;
     return '${(duration.inMinutes).toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
-  }
-  void initJoueur() {
-    hitJoueur = AudioPlayer();
-    hitCache = AudioCache(fixedPlayer: hitJoueur);
-
-    argentJoueur = AudioPlayer();
-    argentCache = AudioCache(fixedPlayer: argentJoueur);
   }
 
   Future<AudioPlayer> lectureMusique() async {
@@ -87,7 +81,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
       }
       tap = true;
       //Si le joueur parvient a tuer le boss :
-      if (barreDegat - degatJoueur <= 0) {
+      if (barreVie - degatJoueur <= 0) {
         argent = argent + 20;
         // definitation du multiplicateur (pour la barre de vie du boss)
         multiplicateur = (bossIndex + 1 >= listBoss.length)
@@ -100,7 +94,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
         //passage au prochain boss
         bossIndex = (bossIndex + 1 >= listBoss.length) ? 0 : ++bossIndex;
         //reinitialisation de la barre de degat (barre de bie du boss)
-        barreDegat = listBoss[bossIndex].vie.toDouble() * multiplicateur;
+        barreVie = listBoss[bossIndex].vie.toDouble() * multiplicateur;
         argentGagne = true;
         onEarnTime?.call();
         Future.delayed(const Duration(seconds: 1), () {
@@ -109,7 +103,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
           });
         });
       } else {
-        barreDegat = barreDegat - degatJoueur;
+        barreVie = barreVie - degatJoueur;
       }
     });
   }
@@ -270,7 +264,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                       FancyButton(
                           size: 18, color: Colors.red,
                           child: Text(
-                          'POINT DE VIE: ${barreDegat.toInt().toString()}',
+                          'POINT DE VIE: ${barreVie.toInt().toString()}',
                           style: Setup.textStyle(18),
                           ),),
                       Padding(
@@ -392,81 +386,6 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
     );
   }
 
-  Widget affichageGameOver() {
-      if(gameOver) {
-        if (musicEnCours && instance != null) {
-          instance.stop();
-          musicEnCours = false;
-        }
-        if (!musicEnCours) {
-          musicEnCours = true;
-          gameOverMusique();
-        }
-        return Stack(
-          children: <Widget>[
-            Container(
-              color: Colors.black,
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                    children: <Widget>[
-                       Image.asset(
-                            listBoss[bossIndex].img,
-                        ),
-                      Text(
-                         'Tué par : ${listBoss[bossIndex].nom}' , style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold
-                        ),
-                      ),
-                      Text(
-                        listBoss[bossIndex].taunt , style: const TextStyle(
-                          color: Colors.white, fontWeight: FontWeight.bold
-                      ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.all(20),
-                        child: Center(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              FancyButton(
-                                size: widthGame(context) /10,
-                                color: Colors.redAccent,
-                                onPressed: () {
-                                  Navigator.of(context).pushReplacement(Redirection(const Accueil()));
-                                },
-                                child: Text(
-                                  'GAME OVER',
-                                  textAlign: TextAlign.center,
-                                  style: TextStyle(
-                                      color: Colors.white,
-                                      fontSize: widthGame(context) /12,
-                                      fontFamily: 'Gameplay'
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                      Text(
-                        'Tu vas abandonner seulement maintenant ?',
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: widthGame(context) /12,
-                            fontFamily: 'Gameplay'
-                        ),
-                      ),
-                    ],
-                  ),
-            ),
-          ],
-        );
-      } else {
-        return Container();
-      }
-  }
-
   Widget itemEnable(Color bgColor, Bonus bonus, int position) {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -573,7 +492,6 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
       }
     });
   }
-
   @override
   void initState() {
     super.initState();
@@ -588,7 +506,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
     onEarnTime = () {
       initClock(add: tempsSupplementaire);
     };
-    barreDegat = listBoss[bossIndex].vie.toDouble() * multiplicateur;
+    barreVie = listBoss[bossIndex].vie.toDouble() * multiplicateur;
     WidgetsBinding.instance.addObserver(this);
   }
 
@@ -600,7 +518,13 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
     }
     WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
+    resetStat();
     super.dispose();
+  }
+  void resetStat() {
+    degatJoueur = 30.0;
+    niveau = 1;
+    multiplicateur = 1.0;
   }
 
   @override
@@ -615,7 +539,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
         child: Stack(
           children: <Widget>[
             moteurDeJeu(context),
-            affichageGameOver(),
+            GameOver(musiqueCache: musiqueCache, instance: instance, gameOver: gameOver, musicEnCours: musicEnCours, listBoss: listBoss, bossIndex: bossIndex)
           ],
         ),
       );
@@ -623,3 +547,4 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   }
   
 }
+
