@@ -26,7 +26,7 @@ class HitBox{
               ),
             ),
             Image.asset(
-              'assets/background/elements/hit_player.png',
+              'assets/images/elements/hit_player.png',
               fit: BoxFit.fill,
               height: 80,
               width: 80,

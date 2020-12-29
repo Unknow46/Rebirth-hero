@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:rebirth_hero/data/model/boss.dart';
-
 import '../data/model/bonus.dart';
 
 class Setup {
@@ -32,13 +31,13 @@ class Setup {
     final listBoss = <Boss>[];
 
     // ignore: cascade_invocations
-    listBoss.add(Boss('Magicien sombre',900, 'assets/background/boss/final_boss_1.jpg', 'tu es si faible que ça ?'));
+    listBoss.add(Boss('Magicien sombre',900, 'assets/images/boss/final_boss_1.jpg', 'tu es si faible que ça ?'));
     // ignore: cascade_invocations
-    listBoss.add(Boss('Magicien démonisé',1800, 'assets/background/boss/final_boss_2.png', 'tu es si faible que ça ?'));
+    listBoss.add(Boss('Magicien démonisé',1800, 'assets/images/boss/final_boss_2.png', 'tu es si faible que ça ?'));
     // ignore: cascade_invocations
-    listBoss.add(Boss('Le Démon',2700, 'assets/background/boss/final_boss_3.png', 'tu es si faible que ça ?'));
+    listBoss.add(Boss('Le Démon',2700, 'assets/images/boss/final_boss_3.png', 'tu es si faible que ça ?'));
     // ignore: cascade_invocations
-    listBoss.add(Boss("L'oublié",3600, 'assets/background/boss/boss3.png', 'tu es si faible que ça ?'));
+    listBoss.add(Boss("L'oublié",3600, 'assets/images/boss/boss3.png', 'tu es si faible que ça ?'));
     return listBoss;
   }
 

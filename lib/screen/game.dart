@@ -45,9 +45,9 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
 
   final _gamepadTouched = false;
 
-  static String cielAsset() => 'assets/background/map/sky.png';
-  static String areneAsset() => 'assets/background/map/ruins.png';
-  static String heroAsset () => 'assets/background/elements/hero.png';
+  static String cielAsset() => 'assets/images/map/sky.png';
+  static String areneAsset() => 'assets/images/map/ruins.png';
+  static String heroAsset () => 'assets/images/elements/hero.png';
 
 
   //Definition de la liste de boss
@@ -145,7 +145,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
       return Padding(
         padding: const EdgeInsets.only(right: 4),
         child: Image.asset(
-          'assets/background/elements/gold_coin.png',
+          'assets/images/elements/gold_coin.png',
           width: 20,
           height: 20,
         ),
@@ -284,7 +284,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                               ),
                             ),
                             Image.asset(
-                              'assets/background/elements/gold_coin.png',
+                              'assets/images/elements/gold_coin.png',
                               height: 16.2,
                             ),
                             Money().argentGagneWidget(argentGagne)

@@ -26,9 +26,9 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
   static AudioCache musicCache;
   static AudioPlayer instance;
 
-  static const String background = 'assets/background/map/arena3.jpg';
-  static const String boss = 'assets/background/boss/final_boss_1.jpg';
-  static const String hero = 'assets/background/elements/hero.png';
+  static const String background = 'assets/images/map/arena3.jpg';
+  static const String boss = 'assets/images/boss/final_boss_1.jpg';
+  static const String hero = 'assets/images/elements/hero.png';
 
   static var musicPlaying = false;
 
