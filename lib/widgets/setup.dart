@@ -47,7 +47,7 @@ class Setup {
   static TextStyle textStyle(double size, {Color color = Colors.white}) {
     return TextStyle(
       color: color,
-      fontFamily: 'Gameplay',
+      fontFamily: 'EXXA-GAME',
       fontSize: size,
     );
   }

@@ -243,8 +243,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                               child: Text(
                                 '         $timer', style: const TextStyle(
                                 fontSize: 20,
-                                color: Colors.black,
-                                fontFamily: 'Gameplay',),)
+                                color: Colors.black,),)
                                 ),
                             FancyButton( size: 20, color: clockColor, child: const Icon(
                                   Icons.watch_later,
@@ -317,7 +316,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                     style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
-                    fontFamily: 'Gameplay',
+                    fontFamily: 'EXXA-GAME',
                     ),
                     ),
                     ),

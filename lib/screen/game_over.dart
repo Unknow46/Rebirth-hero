@@ -54,12 +54,12 @@ class GameOver extends StatelessWidget {
                   ),
                   Text(
                     'Tué par ${listBoss[bossIndex].nom}' , style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold
+                      color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'EXXA-GAME'
                   ),
                   ),
                   Text(
                     listBoss[bossIndex].taunt , style: const TextStyle(
-                      color: Colors.white, fontWeight: FontWeight.bold
+                      color: Colors.white, fontWeight: FontWeight.bold, fontFamily: 'EXXA-GAME'
                   ),
                   ),
                   Padding(
@@ -80,7 +80,7 @@ class GameOver extends StatelessWidget {
                               style: TextStyle(
                                   color: Colors.white,
                                   fontSize: widthGame(context) /12,
-                                  fontFamily: 'Gameplay'
+                                  fontFamily: 'EXXA-GAME'
                               ),
                             ),
                           ),
@@ -94,7 +94,7 @@ class GameOver extends StatelessWidget {
                     style: TextStyle(
                         color: Colors.white,
                         fontSize: widthGame(context) /12,
-                        fontFamily: 'Gameplay'
+                        fontFamily: 'EXXA-GAME'
                     ),
                   ),
                 ],

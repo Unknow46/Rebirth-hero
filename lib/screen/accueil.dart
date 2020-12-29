@@ -222,7 +222,7 @@ class _AccueilState extends State<Accueil> with TickerProviderStateMixin{
                             style: TextStyle(
                             color: Colors.white,
                             fontSize:  MediaQuery.of(context).size.width /10,
-                            fontFamily: 'Gameplay'
+                            fontFamily: 'EXXA-GAME'
                             ),
                             ),
                         ),
