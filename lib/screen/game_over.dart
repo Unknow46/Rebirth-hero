@@ -2,6 +2,7 @@ import 'package:audioplayers/audio_cache.dart';
 import 'package:audioplayers/audioplayers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
+import 'package:rebirth_hero/data/dataSources/firestoreDataSource/firestore.dart';
 import 'package:rebirth_hero/data/model/boss.dart';
 import 'package:rebirth_hero/widgets/button.dart';
 import 'package:rebirth_hero/widgets/redirection.dart';
@@ -12,7 +13,7 @@ import 'accueil.dart';
 class GameOver extends StatelessWidget {
 
   GameOver({Key key, this.musiqueCache, this.instance, this.gameOver, this.musicEnCours,
-  this.listBoss, this.bossIndex})
+  this.listBoss, this.bossIndex, this.niveau})
       :super(key: key);
 
   AudioCache musiqueCache;
@@ -21,6 +22,7 @@ class GameOver extends StatelessWidget {
   dynamic musicEnCours;
   List<Boss> listBoss;
   int bossIndex;
+  int niveau;
 
   double widthGame(BuildContext context) {
     return MediaQuery.of(context).size.width;
@@ -95,6 +97,32 @@ class GameOver extends StatelessWidget {
                         color: Colors.white,
                         fontSize: widthGame(context) /12,
                         fontFamily: 'EXXA-GAME'
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.all(20),
+                    child: Center(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: <Widget>[
+                          FancyButton(
+                            size: widthGame(context) /10,
+                            color: Colors.purple,
+                            onPressed: () async {
+                              await Firestore.instance.insertScore(listBoss[bossIndex], niveau);
+                            },
+                            child: Text(
+                              'SHARE SCORE',
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: widthGame(context) /12,
+                                  fontFamily: 'EXXA-GAME'
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
                     ),
                   ),
                 ],

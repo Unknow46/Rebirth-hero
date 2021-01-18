@@ -4,8 +4,6 @@ import '../data/model/bonus.dart';
 
 class Setup {
 
-
-
   static List<Bonus> getBonus() {
     final listBonus = <Bonus>[];
     
@@ -39,6 +37,9 @@ class Setup {
     // ignore: cascade_invocations
     listBoss.add(Boss("L'oublié",3600, 'assets/images/boss/boss3.png', 'tu es si faible que ça ?'));
     return listBoss;
+
+
+
   }
 
 

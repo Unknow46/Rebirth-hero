@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rebirth_hero/data/model/boss.dart';
 
 class Firestore {
 
@@ -21,6 +22,14 @@ class Firestore {
 
   Future<void> deleteDocumentById(String collectionName, String id) {
     return getCollection(collectionName).doc(id).delete();
+  }
+  
+  Future<void> insertScore(Boss boss, int niveau) async{
+    final share = FirebaseFirestore.instance.collection('score');
+    await share.doc().set({
+      'Nom': boss.nom,
+      'niveau': niveau
+    });
   }
 
 }

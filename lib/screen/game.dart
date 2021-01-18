@@ -12,6 +12,8 @@ import 'package:rebirth_hero/widgets/scroll.dart';
 import '../widgets/setup.dart';
 import 'accueil.dart';
 
+
+
 class Game extends StatefulWidget {
   const Game({Key key}): super(key: key);
 
@@ -21,6 +23,32 @@ class Game extends StatefulWidget {
 
 // ignore: prefer_mixin
 class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindingObserver {
+
+
+  @override
+  void initState() {
+    setupGame();
+    super.initState();
+  }
+
+  void setupGame(){
+
+    if (!musicEnCours) {
+      musicEnCours = true;
+      lectureMusique();
+    }
+    // au debut de la partie pas de temps suppl
+    initClock(add: 0);
+    //quand le joueur arrive a finir la manche dans le temps impartis
+    //ajout du temps supplementaire
+    onEarnTime = () {
+      initClock(add: tempsSupplementaire);
+    };
+      barreVie = listBoss[bossIndex].vie.toDouble() * multiplicateur;
+      WidgetsBinding.instance.addObserver(this);
+  }
+
+
   AnimationController controller;
   var tap = false;
   var xAxis = 0.0;
@@ -47,21 +75,21 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   final _gamepadTouched = false;
 
   static String cielAsset() => 'assets/images/map/sky.png';
+
   static String areneAsset() => 'assets/images/map/ruins.png';
-  static String heroAsset () => 'assets/images/elements/hero.png';
 
-
-  //Definition de la liste de boss
-  var listBoss = Setup.getBoss();
+  static String heroAsset() => 'assets/images/elements/hero.png';
 
   //Definitation de la liste de bonus
+  var listBoss = Setup.getBoss();
   var listBonus = Setup.getBonus();
   var bossIndex = 0;
 
   String get timer {
     // je me sers de animation controller afin de definir le chrono du jeu
     final duration = controller.duration * controller.value;
-    return '${(duration.inMinutes).toString().padLeft(2, '0')}:${(duration.inSeconds % 60).toString().padLeft(2, '0')}';
+    return '${(duration.inMinutes).toString().padLeft(2, '0')}:${(duration
+        .inSeconds % 60).toString().padLeft(2, '0')}';
   }
 
   Future<AudioPlayer> lectureMusique() async {
@@ -116,15 +144,22 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   }
 
   double widthGame(BuildContext context) {
-    return MediaQuery.of(context).size.width;
+    return MediaQuery
+        .of(context)
+        .size
+        .width;
   }
 
   double heightGame(BuildContext context) {
-    return MediaQuery.of(context).size.height;
+    return MediaQuery
+        .of(context)
+        .size
+        .height;
   }
 
   double listItemHeight(BuildContext context) {
-    return widthGame(context) >= 700 ? heightGame(context) : heightGame(context) / 2.8;
+    return widthGame(context) >= 700 ? heightGame(context) : heightGame(
+        context) / 2.8;
   }
 
   void achatBonus(int index) {
@@ -141,16 +176,15 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
 
   void reborn() {
     setState(() {
-      if(argent >= rebornPrice){
+      if (argent >= rebornPrice) {
         argent = argent - rebornPrice;
-        rebornPrice +=50;
+        rebornPrice += 50;
         bossIndex = 0;
         niveau = 1;
         multiplicateur = 1.0;
         barreVie = listBoss[bossIndex].vie.toDouble();
       }
     });
-
   }
 
   Widget visibiliteArgent(dynamic achete) {
@@ -171,13 +205,12 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   //Mise en place widget affichage argent gagne
 
   //Mise en place hitbox du joueur
-  
-  void changementMusique() {
 
-    if (musicEnCours && instance != null){
+  void changementMusique() {
+    if (musicEnCours && instance != null) {
       instance.pause();
       musicEnCours = false;
-    }else {
+    } else {
       lectureMusique();
       musicEnCours = true;
     }
@@ -185,14 +218,14 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
 
   Widget moteurDeJeu(BuildContext context) {
     //Disposition du jeu en colonne
-    return  Column(
-              children: <Widget>[
-                  game(),
-                  shop(),
-              ],
+    return Column(
+      children: <Widget>[
+        game(),
+        shop(),
+      ],
     );
   }
-  
+
   //Mise en place de la vue du game, situe sur la partie haute de l ecran
   Widget game() {
     return Align(
@@ -203,157 +236,165 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
         height: heightGame(context) - listItemHeight(context),
         width: widthGame(context),
         child: Stack(
-          children: <Widget>[
-            SizedBox.expand(
-              child: Image.asset(
-                cielAsset(),
-              fit: BoxFit.cover
+            children: <Widget>[
+              SizedBox.expand(
+                child: Image.asset(
+                    cielAsset(),
+                    fit: BoxFit.cover
+                ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Image.asset(
-                areneAsset(),
+              Align(
                 alignment: Alignment.bottomCenter,
-                fit:BoxFit.fitWidth
-              ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 60),
                 child: Image.asset(
-                  listBoss[bossIndex].img,
-                  height: widthGame(context) / 2.5,
-                  fit: BoxFit.fill,
-                  color: tap ?  Colors.redAccent : null,
+                    areneAsset(),
+                    alignment: Alignment.bottomCenter,
+                    fit: BoxFit.fitWidth
                 ),
               ),
-            ),
-            Align(
-              alignment: Alignment.bottomCenter,
-              child: Padding(
-                padding: const EdgeInsets.only(bottom: 10),
-                child: Image.asset(
-                  heroAsset(),
-                  height: widthGame(context) / 6 < 160 ? widthGame(context) / 6 : 160,
-                  fit: BoxFit.fill,
-                  alignment: Alignment.bottomCenter,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 60),
+                  child: Image.asset(
+                      listBoss[bossIndex].img,
+                      height: widthGame(context) / 2.5,
+                      fit: BoxFit.fill,
+                      color: tap ? Colors.redAccent : null,
+                  ),
                 ),
               ),
-            ),
-            Container(
-              margin: const EdgeInsets.symmetric(vertical: 10),
-              child: SafeArea(
-                child: Align(
-                  alignment: Alignment.topCenter,
-                  child: Column(
-                    children: <Widget>[
-                      Align(
-                        alignment: Alignment.topRight,
-                        child: Padding(
-                          padding: const EdgeInsets.only(top: 10, bottom: 20, right: 15),
-                          child: Stack(children: <Widget>[
-                            FancyButton(size: 20, color: Colors.green,
-                              child: Text(
-                                '         $timer', style: const TextStyle(
-                                fontSize: 20,
-                                color: Colors.black,),)
-                                ),
-                            FancyButton( size: 20, color: clockColor, child: const Icon(
-                                  Icons.watch_later,
-                                  color: Colors.black45,
-                                  size: 20,
-                                  ),)
-                          ],),
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Padding(
+                  padding: const EdgeInsets.only(bottom: 10),
+                  child: Image.asset(
+                    heroAsset(),
+                    height: widthGame(context) / 6 < 160 ? widthGame(context) /
+                        6 : 160,
+                    fit: BoxFit.fill,
+                    alignment: Alignment.bottomCenter,
+                  ),
+                ),
+              ),
+              Container(
+                margin: const EdgeInsets.symmetric(vertical: 10),
+                child: SafeArea(
+                  child: Align(
+                    alignment: Alignment.topCenter,
+                    child: Column(
+                      children: <Widget>[
+                        Align(
+                          alignment: Alignment.topRight,
+                          child: Padding(
+                            padding: const EdgeInsets.only(top: 10,
+                                bottom: 20,
+                                right: 15),
+                            child: Stack(children: <Widget>[
+                              FancyButton(size: 20, color: Colors.green,
+                                  child: Text(
+                                    '         $timer', style: const TextStyle(
+                                    fontSize: 20,
+                                    color: Colors.black,),)
+                              ),
+                              FancyButton(
+                                size: 20, color: clockColor, child: const Icon(
+                                Icons.watch_later,
+                                color: Colors.black45,
+                                size: 20,
+                              ),)
+                            ],),
+                          ),
                         ),
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(bottom: 8),
-                        child: Text(
-                          '${listBoss[bossIndex].nom}   LVL $niveau',
-                          style: Setup.textStyle(15)
+                        Padding(
+                          padding: const EdgeInsets.only(bottom: 8),
+                          child: Text(
+                              '${listBoss[bossIndex].nom}   LVL $niveau',
+                              style: Setup.textStyle(15)
+                          ),
                         ),
-                      ),
-                      FancyButton(
+                        FancyButton(
                           size: 18, color: Colors.red,
                           child: Text(
-                          'POINT DE VIE: ${barreVie.toInt().toString()}',
-                          style: Setup.textStyle(18),
+                            'POINT DE VIE: ${barreVie.toInt().toString()}',
+                            style: Setup.textStyle(18),
                           ),),
-                      Padding(
-                          padding: const EdgeInsets.all(8),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: <Widget>[
-                            Text(
-                              'Argent :   ',
-                              style: Setup.textStyle(10),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5),
-                              child: Text(
-                                '$argent   ',
-                                style: Setup.textStyle(10),
-                              ),
-                            ),
-                            Image.asset(
-                              'assets/images/elements/gold_coin.png',
-                              height: 16.2,
-                            ),
-                            Money().argentGagneWidget(argentGagne)
-                          ],
+                        Padding(
+                            padding: const EdgeInsets.all(8),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: <Widget>[
+                                Text(
+                                  'Argent :   ',
+                                  style: Setup.textStyle(10),
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.only(left: 5),
+                                  child: Text(
+                                    '$argent   ',
+                                    style: Setup.textStyle(10),
+                                  ),
+                                ),
+                                Image.asset(
+                                  'assets/images/elements/gold_coin.png',
+                                  height: 16.2,
+                                ),
+                                Money().argentGagneWidget(argentGagne)
+                              ],
+                            )
                         )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+              GestureDetector(
+                onTapDown: degat,
+                onTapUp: (TapUpDetails details) => cache(null),
+                onTapCancel: () => cache(null),
+              ),
+              if (_gamepadTouched) Container() else
+                HitBox().hitBox(tap, yAxis, xAxis, degatJoueur),
+              SafeArea(
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20, horizontal: 15),
+                  child: Row(
+                    children: <Widget>[
+                      FancyButton(size: 25, color: Colors.red,
+                        onPressed: () {
+                          Navigator.of(context).pushReplacement(
+                              Redirection(const Accueil()));
+                        },
+                        child: const Text(
+                          'X',
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontFamily: 'EXXA-GAME',
+                          ),
+                        ),
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.only(left: 10),
+                        child: FancyButton(
+                          size: 25, color: Colors.green, onPressed: () {
+                          changementMusique();
+                        },
+                          child: Icon(
+                            Icons.music_note,
+                            size: 20,
+                            color: musicEnCours ? Colors.white : Colors.black12,
+                          ),),
                       )
                     ],
                   ),
                 ),
-              ),
-            ),
-            GestureDetector(
-              onTapDown: degat,
-              onTapUp: (TapUpDetails details) => cache(null),
-              onTapCancel: () => cache(null),
-            ),
-            if (_gamepadTouched) Container() else HitBox().hitBox(tap, yAxis, xAxis, degatJoueur),
-            SafeArea(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
-                child: Row(
-                  children: <Widget>[
-                    FancyButton(size: 25, color: Colors.red,
-                                onPressed: () {
-                      Navigator.of(context).pushReplacement(Redirection(const Accueil()));
-                    },
-                    child: const Text(
-                    'X',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                    fontFamily: 'EXXA-GAME',
-                    ),
-                    ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 10),
-                      child: FancyButton( size: 25, color: Colors.green, onPressed: () {
-                        changementMusique();
-                      },
-                      child: Icon(
-                      Icons.music_note,
-                      size: 20,
-                      color: musicEnCours ? Colors.white : Colors.black12,
-                      ),),
-                    )
-                  ],
-                ),
-              ),
-            )
-          ]
+              )
+            ]
         ),
-        ),
-      );
+      ),
+    );
   }
 
   //Mise en place des elements du jeu (item bonus)
@@ -370,7 +411,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
               Expanded(child: Align(
                 alignment: Alignment.centerLeft,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 15),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 20, horizontal: 15),
                   child: Text(
                     'Item Shop',
                     style: Setup.textStyle(12),
@@ -381,19 +423,20 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
               Align(
                 alignment: Alignment.centerRight,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 15),
-                  child: FancyButton(
-                    size: 10,
-                    color: Colors.green,
-                    onPressed: reborn,
-                    child: Padding(
-                      padding: const EdgeInsets.all(8),
-                      child: Text(
-                        'Renaitre : $rebornPrice',
-                        style: Setup.textStyle(12),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 10, horizontal: 15),
+                    child: FancyButton(
+                      size: 10,
+                      color: Colors.green,
+                      onPressed: reborn,
+                      child: Padding(
+                        padding: const EdgeInsets.all(8),
+                        child: Text(
+                          'Renaitre : $rebornPrice',
+                          style: Setup.textStyle(12),
+                        ),
                       ),
-                    ),
-                  )
+                    )
                 ),
               )
             ],
@@ -407,7 +450,8 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                 itemBuilder: (context, position) {
                   final bonus = listBonus[position];
                   final bgColor = !bonus.achete && argent >= bonus.argent ?
-                  Colors.amberAccent : !bonus.achete ? Colors.grey: Colors.green;
+                  Colors.amberAccent : !bonus.achete ? Colors.grey : Colors
+                      .green;
                   return itemEnable(bgColor, bonus, position);
                 },
               ),
@@ -434,38 +478,46 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Text(
                     bonus.nom,
-                    style: Setup.textStyle(13, color: !bonus.achete ? Colors.black : Colors.indigo),
+                    style: Setup.textStyle(13,
+                        color: !bonus.achete ? Colors.black : Colors.indigo),
                   ),
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 20),
-                child: FancyButton
-                  (size: 20,
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 8, horizontal: 20),
+                  child: FancyButton
+                    (size: 20,
                     color: !bonus.achete && argent >= bonus.argent
-                           ? Colors.green
-                           : Colors.red,
-                    onPressed: !bonus.achete && argent >= bonus.argent ? () => achatBonus(position) : null,
+                        ? Colors.green
+                        : Colors.red,
+                    onPressed: !bonus.achete && argent >= bonus.argent ? () =>
+                        achatBonus(position) : null,
                     child: Row(
-                    children: <Widget>[
-                    Padding(padding: const EdgeInsets.only(left: 10, bottom: 2, top:2),
-                      child: Text(
-                          !bonus.achete ? 'ACHETER' : 'POSSEDE',
-                          style:
-                          Setup.textStyle(13, color: !bonus.achete ? Colors.white : Colors.black),
-                      ),
+                      children: <Widget>[
+                        Padding(padding: const EdgeInsets.only(
+                            left: 10, bottom: 2, top: 2),
+                          child: Text(
+                            !bonus.achete ? 'ACHETER' : 'POSSEDE',
+                            style:
+                            Setup.textStyle(13,
+                                color: !bonus.achete ? Colors.white : Colors
+                                    .black),
+                          ),
+                        ),
+                        Padding(
+                          padding: EdgeInsets.only(left: 8, right: !bonus.achete
+                              ? 2.0
+                              : 0.0),
+                          child: Text(
+                            !bonus.achete ? bonus.argent.toString() : '',
+                            style: Setup.textStyle(13),
+                          ),
+                        ),
+                        visibiliteArgent(bonus.achete)
+                      ],
                     ),
-                    Padding(
-                      padding: EdgeInsets.only(left: 8, right: !bonus.achete ? 2.0 : 0.0),
-                      child: Text(
-                        !bonus.achete ? bonus.argent.toString(): '',
-                        style: Setup.textStyle(13),
-                      ),
-                    ),
-                    visibiliteArgent(bonus.achete)
-                    ],
-                  ),
-                )
+                  )
               )
             ],
           ),
@@ -478,7 +530,7 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
   void initClock({int add}) {
     if (controller == null) {
       //si le controller est null je defini le temps backup a mon temps actuel
-      tempsBackup  = temps;
+      tempsBackup = temps;
     } else {
       //calcul du temps actuel lors de la fin d'une manche
       final tempsActuel = controller.duration * controller.value;
@@ -488,14 +540,14 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
 
     // reinitialisation du controller en ajoutant le temps supplementaire
     controller = null;
-    controller = AnimationController(vsync: this, duration: Duration(milliseconds: tempsBackup + add));
+    controller = AnimationController(
+        vsync: this, duration: Duration(milliseconds: tempsBackup + add));
     controller.reverse(from: controller.value == 0.0 ? 1.0 : controller.value);
 
     // ignore: cascade_invocations
     controller.addListener(() {
       setState(() {
         timer;
-
         //calcul du temps actuel
         final duration = controller.duration * controller.value;
 
@@ -503,17 +555,15 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
           clockColor = Colors.white;
         }
 
-        if (duration.inSeconds  < 20) {
+        if (duration.inSeconds < 20) {
           clockColor = Colors.yellowAccent;
         }
 
-        if (duration.inSeconds  < 10) {
+        if (duration.inSeconds < 10) {
           clockColor = Colors.red;
         }
       });
     });
-
-
     //si le temps se termine alors la partie est termine
     // ignore: cascade_invocations
     controller.addStatusListener((status) {
@@ -524,35 +574,19 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
       }
     });
   }
-  @override
-  void initState() {
-    super.initState();
-    if (!musicEnCours) {
-       musicEnCours = true;
-       lectureMusique();
-    }
-    // au debut de la partie pas de temps suppl
-    initClock(add: 0);
-    //quand le joueur arrive a finir la manche dans le temps impartis
-    //ajout du temps supplementaire
-    onEarnTime = () {
-      initClock(add: tempsSupplementaire);
-    };
-    barreVie = listBoss[bossIndex].vie.toDouble() * multiplicateur;
-    WidgetsBinding.instance.addObserver(this);
-  }
 
   @override
   void dispose() {
-      if (musicEnCours && instance != null) {
-        instance.stop();
-        musicEnCours = false;
+    if (musicEnCours && instance != null) {
+      instance.stop();
+      musicEnCours = false;
     }
     WidgetsBinding.instance.removeObserver(this);
     controller.dispose();
     resetStat();
     super.dispose();
   }
+
   void resetStat() {
     degatJoueur = 30.0;
     niveau = 1;
@@ -572,12 +606,17 @@ class _GameState extends State<Game> with TickerProviderStateMixin, WidgetsBindi
         child: Stack(
           children: <Widget>[
             moteurDeJeu(context),
-            GameOver(musiqueCache: musiqueCache, instance: instance, gameOver: gameOver, musicEnCours: musicEnCours, listBoss: listBoss, bossIndex: bossIndex)
+            GameOver(musiqueCache: musiqueCache,
+                instance: instance,
+                gameOver: gameOver,
+                musicEnCours: musicEnCours,
+                listBoss: listBoss,
+                niveau: niveau,
+                bossIndex: bossIndex)
           ],
         ),
       );
     });
   }
-  
-}
 
+}
